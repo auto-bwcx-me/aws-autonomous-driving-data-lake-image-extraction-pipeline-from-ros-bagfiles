@@ -31,11 +31,12 @@ if [ $find == "1" ]; then
 
         echo "config region for select-labelling-imgs.py"
         sed -i "" "s/\"awsRegion\": \"[a-z]*-[a-z]*-[1-9]*\"/\"awsRegion\": \"$rg\"/" infrastructure/select-labelling-imgs/select-labelling-imgs.py
-
-        echo "config region for synchronize_topics.py"
-        sed -i "" "s/^run_region=\"[a-z]*-[a-z]*-[1-9]*\"/run_region=\"$rg\"/" spark_scripts/synchronize_topics.py
     else
-        echo ""
+        echo "config region for deploy.sh"
+        sed -i "s/^run_region=\"[a-z]*-[a-z]*-[1-9]*\"/run_region=\"$rg\"/" deploy.sh
+
+        echo "config region for select-labelling-imgs.py"
+        sed -i "s/\"awsRegion\": \"[a-z]*-[a-z]*-[1-9]*\"/\"awsRegion\": \"$rg\"/" infrastructure/select-labelling-imgs/select-labelling-imgs.py
     fi
     aws configure set region $rg
 else

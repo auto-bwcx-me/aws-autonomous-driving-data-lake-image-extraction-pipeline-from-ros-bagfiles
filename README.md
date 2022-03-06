@@ -108,8 +108,7 @@ bash deploy.sh deploy true
 
 # 3.注意事项
 ----------
-
-因为权限配置的原因，在开始真实的测试之前，必须手工在EMR控制台启动一个集群，启动后直接关闭即可。
+需要手工在对应 Region 创建 ECR 的存储库： `vsi-rosbag-image-repository`
 
 
 

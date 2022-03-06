@@ -96,14 +96,7 @@ cdk bootstrap
 开始之前记得在 ECR 里面创建私有存储库： `vsi-rosbag-image-repository`
 
 
-
-## 2.5 CDK synth
-```
-bash deploy.sh synth true
-```
-
-
-## 2.6 CDK Deploy
+## 2.5 CDK Deploy
 ```
 bash deploy.sh deploy true
 ```

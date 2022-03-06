@@ -13,13 +13,13 @@ IMAGE_NAME=my-vsi-ros-image           # Should match the image name given in con
 python3 -m venv .env
 source .env/bin/activate
 pip install -r requirements.txt | grep -v 'already satisfied'
-cdk bootstrap aws://$aws_account_id/${run_region}
+cdk bootstrap aws://${aws_account_id}/${run_region}
 
 if [ $build = true ]; then
-  export repo_url=$aws_account_id.dkr.ecr.${run_region}.amazonaws.com/$REPO_NAME
-  docker build ./service -t $IMAGE_NAME:latest
+  export repo_url=${aws_account_id}.dkr.ecr.${run_region}.amazonaws.com/${REPO_NAME}
+  docker build ./service -t ${IMAGE_NAME}:latest
   last_image_id=$(docker images | awk '{print $3}' | awk 'NR==2')
-  docker tag $last_image_id $repo_url
+  docker tag ${last_image_id} ${repo_url}
   #This command requires AWSCLI V2
   echo login ecr
   aws ecr get-login-password --region ${run_region} | docker login --username AWS --password-stdin $repo_url

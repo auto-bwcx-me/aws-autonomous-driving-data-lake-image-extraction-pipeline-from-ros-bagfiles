@@ -1,13 +1,13 @@
 FROM ros:melodic-perception-bionic
 
-RUN rm /bin/sh
-ln -s /bin/bash /bin/sh
-RUN apt update && apt-get install python3-pip unzip curl vim ffmpeg -y
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+ENV DEBIAN_FRONTEND="noninteractive"
+RUN apt-get update && apt-get install python3-pip unzip curl vim ffmpeg -y
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 RUN unzip awscliv2.zip
 RUN sudo ./aws/install
 
-RUN apt install git -y
+RUN apt-get install git -y
 RUN apt-get install ros-melodic-pcl-conversions -y
 RUN apt-get install ros-melodic-pcl-ros -y
 

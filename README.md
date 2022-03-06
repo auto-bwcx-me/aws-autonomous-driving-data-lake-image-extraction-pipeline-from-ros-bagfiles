@@ -93,6 +93,11 @@ cdk --version
 cdk bootstrap
 ```
 
+
+注意事项：需要手工在对应 Region 创建 ECR 的存储库： `vsi-rosbag-image-repository`，再开启后续的步骤。
+
+
+
 ## 2.5 CDK synth
 ```
 bash deploy.sh synth true
@@ -108,7 +113,7 @@ bash deploy.sh deploy true
 
 # 3.注意事项
 ----------
-需要手工在对应 Region 创建 ECR 的存储库： `vsi-rosbag-image-repository`
+留空。
 
 
 

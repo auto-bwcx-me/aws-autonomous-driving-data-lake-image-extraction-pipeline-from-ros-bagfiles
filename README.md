@@ -1,5 +1,120 @@
 
-# ROS bag image extraction pipeline and Model Training
+# 博客
+
+英文： https://aws.amazon.com/cn/blogs/architecture/field-notes-building-an-automated-scene-detection-pipeline-for-autonomous-driving/  
+中文： 准备中。
+
+
+
+# 1.环境配置
+----------
+1.Cloud9 权限 
+- 绑定角色（这个必须操作，cdk不能使用aksk的方式）  
+- 清理临时（如果没有清除，cdk将会执行失败）  
+```
+rm -vf ${HOME}/.aws/credentials
+```
+
+2.Set region
+```
+aws configure set region $(curl -s http://169.254.169.254/latest/meta-data/placement/region)
+```
+
+3.调大磁盘空间
+```
+wget http://container.bwcx.me/0-prepare/002-mgmt.files/resize-ebs.sh
+
+chmod +x resize-ebs.sh
+
+./resize-ebs.sh 2000
+```
+
+查看磁盘信息
+```
+df -hT
+
+lsblk
+```
+
+使扩容生效
+```
+sudo growpart /dev/nvme0n1 1
+
+sudo xfs_growfs -d /
+```
+
+
+# 2.部署步骤
+----------
+
+## 2.1 Clone code
+```
+git clone https://github.com/auto-bwcx-me/aws-autonomous-driving-data-lake-ros-bag-scene-detection-pipeline.git
+
+cd aws-autonomous-driving-data-lake-ros-bag-scene-detection-pipeline
+```
+
+
+## 2.2 设置区域
+----------
+
+在开始之前，需要设定 Region，如果没有设定的话，默认使用新加坡区域 （ap-southeast-1）
+
+~~~shell
+# default setting singapore region (ap-southeast-1)
+sh 00-define-region.sh
+
+# sh 00-define-region.sh us-east-1
+~~~
+
+
+
+## 2.3 Prepare ENV
+
+```
+python3 -m venv .env
+
+pip3 install -r requirements.txt
+```
+
+## 2.4 Install CDK
+```
+npm install -g aws-cdk --force
+
+cdk --version
+```
+
+如果是第一次运行CDK，先执行
+参考文档 https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html
+```
+# cdk bootstrap aws://123456789012/us-east-1
+
+cdk bootstrap
+```
+
+## 2.5 CDK synth
+```
+bash deploy.sh synth true
+```
+
+
+## 2.6 CDK Deploy
+```
+bash deploy.sh deploy true
+```
+
+
+
+# 3.注意事项
+----------
+
+因为权限配置的原因，在开始真实的测试之前，必须手工在EMR控制台启动一个集群，启动后直接关闭即可。
+
+
+
+
+# 4.ROS bag image extraction pipeline and Model Training
+----------
 This solution describes a workflow that processes ROS bag files on Amazon S3, extracts the PNG files from a video stream using AWS Fargate on Amazon Elastic Container Services. The solution builds a DynamoDB table containing all detection results from Amazon Rekognition, which can be queried to find images of interest such as images containing cars. Afterwards, we want to label these images and fine-tune a Object Detection Model to detect cars on the road. For simplicity reasons, we have provided an example SageMaker Ground Truth Manifest File from a Bounding Boxes Labeling Job. In order to train the Object Detection Model we will convert the SageMaker Ground Truth Manifest file into the RecordIO file format, after we have visually inspected the annotation quality from our labelling job.
 
 ## Initial Configuration and Deployment of the CDK Stack

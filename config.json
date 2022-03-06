@@ -13,7 +13,7 @@
   },
   "environment-variables": {
     "s3_source_prefix": "$.key",
-    "s3_source" : "$.bucket",
-    "s3_destination" : "$.dest_bucket"
+    "s3_source": "$.bucket",
+    "s3_destination": "$.dest_bucket"
   }
 }

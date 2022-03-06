@@ -166,7 +166,7 @@ if __name__ == "__main__":
             {
                 "eventVersion": "2.1",
                 "eventSource": "aws:s3",
-                "awsRegion": "eu-west-1",
+                "awsRegion": "ap-southeast-1",
                 "eventTime": "2020-10-26T14:53:21.544Z",
                 "eventName": "ObjectCreated:Put",
                 "userIdentity": {

@@ -1,7 +1,8 @@
 
 # 博客
 
-英文： https://aws.amazon.com/cn/blogs/architecture/field-notes-building-an-automated-scene-detection-pipeline-for-autonomous-driving/  
+英文： https://aws.amazon.com/cn/blogs/architecture/field-notes-building-an-automated-image-processing-and-model-training-pipeline-for-autonomous-driving/  
+
 中文： 准备中。
 
 

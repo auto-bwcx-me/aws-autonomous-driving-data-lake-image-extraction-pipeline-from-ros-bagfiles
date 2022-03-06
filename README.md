@@ -50,9 +50,9 @@ sudo xfs_growfs -d /
 
 ## 2.1 Clone code
 ```
-git clone https://github.com/auto-bwcx-me/aws-autonomous-driving-data-lake-ros-bag-scene-detection-pipeline.git
+git clone https://github.com/auto-bwcx-me/aws-autonomous-driving-data-lake-image-extraction-pipeline-from-ros-bagfiles.git
 
-cd aws-autonomous-driving-data-lake-ros-bag-scene-detection-pipeline
+cd aws-autonomous-driving-data-lake-image-extraction-pipeline-from-ros-bagfiles
 ```
 
 

@@ -93,6 +93,9 @@ cdk --version
 cdk bootstrap
 ```
 
+开始之前记得在 ECR 里面创建私有存储库： `vsi-rosbag-image-repository`
+
+
 
 ## 2.5 CDK synth
 ```

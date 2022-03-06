@@ -4,7 +4,7 @@
   "stack-id": "my-vsi-rosbag-stack",
   "cpu": 4096,
   "memory-limit-mib": 30720,
-  "timeout-minutes": 30,
+  "timeout-minutes": 480,
   "s3-filters": {
     "prefix": [],
     "suffix": [

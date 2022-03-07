@@ -114,9 +114,19 @@ bash deploy.sh deploy true
 
 
 
-# 3.注意事项
+# 3.SageMaker笔记本
 ----------
-留空。
+
+打开一个 Terminal 终端，执行如下代码做准备工作
+```
+cd SageMaker
+
+git clone https://github.com/auto-bwcx-me/aws-autonomous-driving-data-lake-image-extraction-pipeline-from-ros-bagfiles.git
+
+cp -Rv aws-autonomous-driving-data-lake-image-extraction-pipeline-from-ros-bagfiles/object-detection/* ./
+```
+
+然后双击打开 `Transfer-Learning.ipynb` 可开始测试。
 
 
 

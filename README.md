@@ -89,6 +89,13 @@ npm install -g aws-cdk --force
 cdk --version
 ```
 
+
+创建 ECR 存储库： `vsi-rosbag-image-repository`
+```
+aws ecr create-repository --repository-name vsi-rosbag-image-repository
+```
+
+
 如果是第一次运行CDK，先执行
 参考文档 https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html
 ```
@@ -96,11 +103,6 @@ cdk --version
 # cdk bootstrap aws://123456789012/ap-southeast-1
 
 cdk bootstrap
-```
-
-创建 ECR 存储库： `vsi-rosbag-image-repository`
-```
-aws ecr create-repository --repository-name vsi-rosbag-image-repository
 ```
 
 

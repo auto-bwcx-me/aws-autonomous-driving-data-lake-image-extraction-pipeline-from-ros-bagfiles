@@ -48,7 +48,7 @@ sudo xfs_growfs -d /
 # 2.部署步骤
 ----------
 
-## 2.1 Clone code
+## 2.1 准备代码
 ```
 git clone https://github.com/auto-bwcx-me/aws-autonomous-driving-data-lake-image-extraction-pipeline-from-ros-bagfiles.git
 
@@ -61,24 +61,28 @@ cd aws-autonomous-driving-data-lake-image-extraction-pipeline-from-ros-bagfiles
 
 在开始之前，需要设定 Region，如果没有设定的话，默认使用新加坡区域 （ap-southeast-1）
 
-~~~shell
+```
 # default setting singapore region (ap-southeast-1)
 sh 00-define-region.sh
 
 # sh 00-define-region.sh us-east-1
-~~~
+```
 
 
 
-## 2.3 Prepare ENV
+## 2.3 准备环境
 
 ```
+pip install --upgrade pip
+# python3 -m pip install --upgrade pip
+
 python3 -m venv .env
 
 pip3 install -r requirements.txt
 ```
 
-## 2.4 Install CDK
+
+## 2.4 安装CDK
 ```
 npm install -g aws-cdk --force
 
@@ -89,14 +93,19 @@ cdk --version
 参考文档 https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html
 ```
 # cdk bootstrap aws://123456789012/us-east-1
+# cdk bootstrap aws://123456789012/ap-southeast-1
 
 cdk bootstrap
 ```
 
-开始之前记得在 ECR 里面创建私有存储库： `vsi-rosbag-image-repository`
+创建 ECR 存储库： `vsi-rosbag-image-repository`
+```
+aws ecr create-repository --repository-name vsi-rosbag-image-repository
+```
 
 
-## 2.5 CDK Deploy
+
+## 2.5 CDK部署
 ```
 bash deploy.sh deploy true
 ```

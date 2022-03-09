@@ -23,12 +23,15 @@ aws configure set region $(curl -s http://169.254.169.254/latest/meta-data/place
 
 3.调大磁盘空间
 ```
-wget http://container.bwcx.me/0-prepare/002-mgmt.files/resize-ebs.sh
+# wget http://container.bwcx.me/0-prepare/002-mgmt.files/resize-ebs.sh
+# chmod +x resize-ebs.sh
+# ./resize-ebs.sh 2000
 
-chmod +x resize-ebs.sh
-
-./resize-ebs.sh 2000
+wget http://k8s.bwcx.me/1-basic/13-template/131-infra.files/resize-ebs-nvme.sh
+chmod +x resize-ebs-nvme.sh
+./resize-ebs-nvme.sh 1000
 ```
+
 
 查看磁盘信息
 ```
@@ -112,9 +115,49 @@ cdk bootstrap
 bash deploy.sh deploy true
 ```
 
+注意：这个部署过程有个确认过程，不能直接启动部署就走开哦，要确认部署才能走开。
 
 
-# 3.SageMaker笔记本
+
+# 3.准备数据
+----------
+
+请确保 CDK 全部部署成功（大概需要15-20分钟），然后再在 Cloud9 上执行这些操作。
+```
+# get s3 bucket name
+s3url="https://auto-bwcx-me.s3.ap-southeast-1.amazonaws.com/my-vsi-rosbag-stack-srcbucket"
+echo "Download URL is: ${s3url}"
+s3bkt=$(aws s3 ls |grep my-vsi-rosbag-stack-srcbucket |awk '{print $3}')
+echo "S3 bucket is: ${s3bkt}"
+
+
+# create saving directory
+cd ~/environment
+mkdir -p ./auto-data/{industry,test1,test2}
+
+
+# download testing files
+wget ${s3url}/industry-kit/v1/2020-10-05-11-11-58_1.bag -O ./auto-data/industry/2020-10-05-11-11-58_1.bag
+wget ${s3url}/industry-kit/v1/test_file_2GB_2021-07-14-12-00-00_1.bag -O ./auto-data/industry/test_file_2GB_2021-07-14-12-00-00_1.bag
+wget ${s3url}/industry-kit/v1/test_file_7GB_2021-07-14-12-30-00_1.bag -O ./auto-data/industry/test_file_7GB_2021-07-14-12-30-00_1.bag
+wget ${s3url}/test-vehicle-01/072021/2020-11-19-22-21-36_1.bag -O ./auto-data/test1/2020-11-19-22-21-36_1.bag
+wget ${s3url}/test-vehicle-02/072021/2020-11-19-22-21-36_1.bag -O ./auto-data/test2/2020-11-19-22-21-36_1.bag
+
+
+# upload testing file
+aws s3 cp ./auto-data/industry/2020-10-05-11-11-58_1.bag ${s3bkt}/industry-kit/v1/2020-10-05-11-11-58_1.bag
+aws s3 cp ./auto-data/industry/test_file_2GB_2021-07-14-12-00-00_1.bag ${s3bkt}/industry-kit/v1/test_file_2GB_2021-07-14-12-00-00_1.bag
+aws s3 cp ./auto-data/industry/test_file_7GB_2021-07-14-12-30-00_1.bag ${s3bkt}/industry-kit/v1/test_file_7GB_2021-07-14-12-30-00_1.bag
+aws s3 cp ./auto-data/test1/2020-11-19-22-21-36_1.bag ${s3bkt}/test-vehicle-01/072021/2020-11-19-22-21-36_1.bag
+aws s3 cp ./auto-data/test2/2020-11-19-22-21-36_1.bag ${s3bkt}/test-vehicle-02/072021/2020-11-19-22-21-36_1.bag
+```
+
+
+
+
+
+
+# 4.SageMaker笔记本
 ----------
 
 打开一个 Terminal 终端，执行如下代码做准备工作
@@ -131,7 +174,7 @@ cp -Rv aws-autonomous-driving-data-lake-image-extraction-pipeline-from-ros-bagfi
 
 
 
-# 4.ROS bag image extraction pipeline and Model Training
+# 5.ROS bag image extraction pipeline and Model Training
 ----------
 This solution describes a workflow that processes ROS bag files on Amazon S3, extracts the PNG files from a video stream using AWS Fargate on Amazon Elastic Container Services. The solution builds a DynamoDB table containing all detection results from Amazon Rekognition, which can be queried to find images of interest such as images containing cars. Afterwards, we want to label these images and fine-tune a Object Detection Model to detect cars on the road. For simplicity reasons, we have provided an example SageMaker Ground Truth Manifest File from a Bounding Boxes Labeling Job. In order to train the Object Detection Model we will convert the SageMaker Ground Truth Manifest file into the RecordIO file format, after we have visually inspected the annotation quality from our labelling job.
 

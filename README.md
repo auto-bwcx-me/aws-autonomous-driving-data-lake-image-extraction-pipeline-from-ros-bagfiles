@@ -9,43 +9,29 @@
 
 # 1.环境配置
 ----------
-1.Cloud9 权限 
-- 绑定角色（这个必须操作，cdk不能使用aksk的方式）  
-- 清理临时（如果没有清除，cdk将会执行失败）  
+1.设置Cloud9权限 
+- 绑定 Instance Profile角色（这个必须操作，cdk不能使用aksk的方式）  
+- 清理临时 Token（如果没有清除，cdk将会执行失败，因为STS和AKSK优先于Role执行）  
 ```
+sudo yum install jq -y
+
 rm -vf ${HOME}/.aws/credentials
 ```
 
-2.Set region
+
+2.设置Cloud9区域
 ```
 aws configure set region $(curl -s http://169.254.169.254/latest/meta-data/placement/region)
 ```
 
-3.调大磁盘空间
-```
-# wget http://container.bwcx.me/0-prepare/002-mgmt.files/resize-ebs.sh
-# chmod +x resize-ebs.sh
-# ./resize-ebs.sh 2000
 
-wget http://k8s.bwcx.me/1-basic/13-template/131-infra.files/resize-ebs-nvme.sh
-chmod +x resize-ebs-nvme.sh
-./resize-ebs-nvme.sh 1000
+3.设置Cloud9磁盘空间
+```
+# sh resize-ebs.sh 1000
+
+sh resize-ebs-nvme.sh 1000
 ```
 
-
-查看磁盘信息
-```
-df -hT
-
-lsblk
-```
-
-使扩容生效
-```
-sudo growpart /dev/nvme0n1 1
-
-sudo xfs_growfs -d /
-```
 
 
 # 2.部署步骤
@@ -59,16 +45,16 @@ cd aws-autonomous-driving-data-lake-image-extraction-pipeline-from-ros-bagfiles
 ```
 
 
-## 2.2 设置区域
+## 2.2 设置脚本区域
 ----------
 
 在开始之前，需要设定 Region，如果没有设定的话，默认使用新加坡区域 （ap-southeast-1）
 
 ```
 # default setting singapore region (ap-southeast-1)
-sh 00-define-region.sh
-
 # sh 00-define-region.sh us-east-1
+
+sh 00-define-region.sh
 ```
 
 
@@ -77,7 +63,6 @@ sh 00-define-region.sh
 
 ```
 pip install --upgrade pip
-# python3 -m pip install --upgrade pip
 
 python3 -m venv .env
 
@@ -99,11 +84,9 @@ aws ecr create-repository --repository-name vsi-rosbag-image-repository
 ```
 
 
-如果是第一次运行CDK，先执行
-参考文档 https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html
+如果是第一次运行CDK，可以参考 [CDK官方文档](https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html)，或者执行如下注释了的代码
 ```
-# cdk bootstrap aws://123456789012/us-east-1
-# cdk bootstrap aws://123456789012/ap-southeast-1
+# cdk bootstrap aws://$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document/ |jq -r .accountId)/$(curl -s http://169.254.169.254/latest/meta-data/placement/region)
 
 cdk bootstrap
 ```
@@ -121,7 +104,6 @@ bash deploy.sh deploy true
 
 # 3.准备数据
 ----------
-
 请确保 CDK 全部部署成功（大概需要15-20分钟），然后再在 Cloud9 上执行这些操作。
 ```
 # get s3 bucket name

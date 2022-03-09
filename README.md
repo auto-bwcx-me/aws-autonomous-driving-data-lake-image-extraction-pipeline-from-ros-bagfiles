@@ -145,11 +145,11 @@ wget ${s3url}/test-vehicle-02/072021/2020-11-19-22-21-36_1.bag -O ./auto-data/te
 
 
 # upload testing file
-aws s3 cp ./auto-data/industry/2020-10-05-11-11-58_1.bag ${s3bkt}/industry-kit/v1/2020-10-05-11-11-58_1.bag
-aws s3 cp ./auto-data/industry/test_file_2GB_2021-07-14-12-00-00_1.bag ${s3bkt}/industry-kit/v1/test_file_2GB_2021-07-14-12-00-00_1.bag
-aws s3 cp ./auto-data/industry/test_file_7GB_2021-07-14-12-30-00_1.bag ${s3bkt}/industry-kit/v1/test_file_7GB_2021-07-14-12-30-00_1.bag
-aws s3 cp ./auto-data/test1/2020-11-19-22-21-36_1.bag ${s3bkt}/test-vehicle-01/072021/2020-11-19-22-21-36_1.bag
-aws s3 cp ./auto-data/test2/2020-11-19-22-21-36_1.bag ${s3bkt}/test-vehicle-02/072021/2020-11-19-22-21-36_1.bag
+aws s3 cp ./auto-data/industry/2020-10-05-11-11-58_1.bag s3://${s3bkt}/industry-kit/v1/2020-10-05-11-11-58_1.bag
+aws s3 cp ./auto-data/industry/test_file_2GB_2021-07-14-12-00-00_1.bag s3://${s3bkt}/industry-kit/v1/test_file_2GB_2021-07-14-12-00-00_1.bag
+aws s3 cp ./auto-data/industry/test_file_7GB_2021-07-14-12-30-00_1.bag s3://${s3bkt}/industry-kit/v1/test_file_7GB_2021-07-14-12-30-00_1.bag
+aws s3 cp ./auto-data/test1/2020-11-19-22-21-36_1.bag s3://${s3bkt}/test-vehicle-01/072021/2020-11-19-22-21-36_1.bag
+aws s3 cp ./auto-data/test2/2020-11-19-22-21-36_1.bag s3://${s3bkt}/test-vehicle-02/072021/2020-11-19-22-21-36_1.bag
 ```
 
 

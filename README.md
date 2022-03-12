@@ -151,8 +151,6 @@ aws s3 cp ${save_dir}/test2/2020-11-19-22-21-36_1.bag s3://${s3bkt}/test-vehicle
 
 
 
-
-
 # 4.SageMaker笔记本
 打开一个 Terminal 终端，执行如下代码做准备工作
 ```shell
@@ -165,6 +163,16 @@ cp -Rv aws-autonomous-driving-data-lake-image-extraction-pipeline-from-ros-bagfi
 
 
 然后双击打开 `Transfer-Learning.ipynb` 可开始测试。
+
+
+
+
+# 5.环境清理
+先手工清空对应的S3桶里面的数据，然后执行如下命令清除环境
+```shell
+cdk destroy --all --require-approval never
+```
+
 
 
 

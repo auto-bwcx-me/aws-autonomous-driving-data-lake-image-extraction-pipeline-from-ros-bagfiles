@@ -1,41 +1,43 @@
 
-# 博客
+# 参考架构
+![](./images/architecture.png)
 
-英文： https://aws.amazon.com/cn/blogs/architecture/field-notes-building-an-automated-image-processing-and-model-training-pipeline-for-autonomous-driving/  
 
-中文： 准备中。
+英文原版 Blog ： [building-an-automated-image-processing-and-model-training-pipeline-for-autonomous-driving](https://aws.amazon.com/cn/blogs/architecture/field-notes-building-an-automated-image-processing-and-model-training-pipeline-for-autonomous-driving/)
+
+
 
 
 
 # 1.环境配置
-----------
-1.设置Cloud9权限 
-- 绑定 Instance Profile角色（这个必须操作，cdk不能使用aksk的方式）  
-- 清理临时 Token（如果没有清除，cdk将会执行失败，因为STS和AKSK优先于Role执行）  
-```
-sudo yum install jq -y
+设置Cloud9
+* 设置并绑定 Instance Profile 角色
+* 清理临时 Credentials
 
-rm -vf ${HOME}/.aws/credentials
 ```
-
-
-2.设置Cloud9区域
-```
+echo "config region"
 aws configure set region $(curl -s http://169.254.169.254/latest/meta-data/placement/region)
+
+echo "install packages"
+sudo yum install jq wget -y
+
+echo "remove temp credentials"
+rm -vf ${HOME}/.aws/credentials
 ```
 
 
 
 # 2.部署步骤
-----------
 
 ## 2.1 准备代码
 ```
+cd ~/environment
+
+echo "clone code from github"
 git clone https://github.com/auto-bwcx-me/aws-autonomous-driving-data-lake-image-extraction-pipeline-from-ros-bagfiles.git
 
 cd aws-autonomous-driving-data-lake-image-extraction-pipeline-from-ros-bagfiles
 ```
-
 
 
 设置Cloud9磁盘空间
@@ -48,14 +50,10 @@ sh resize-ebs-nvme.sh 1000
 
 
 
-## 2.2 设置脚本区域
-----------
-
+## 2.2 设置区域
 在开始之前，需要设定 Region，如果没有设定的话，默认使用新加坡区域 （ap-southeast-1）
-
 ```
-# default setting singapore region (ap-southeast-1)
-# sh 00-define-region.sh us-east-1
+# sh 00-define-region.sh ap-southeast-1
 
 sh 00-define-region.sh
 ```
@@ -63,7 +61,6 @@ sh 00-define-region.sh
 
 
 ## 2.3 准备环境
-
 ```
 pip install --upgrade pip
 
@@ -71,6 +68,7 @@ python3 -m venv .env
 
 pip3 install -r requirements.txt
 ```
+
 
 
 ## 2.4 安装CDK
@@ -81,10 +79,11 @@ cdk --version
 ```
 
 
-创建 ECR 存储库： `vsi-rosbag-image-repository`
+创建 ECR 存储库： `rosbag-images-extract`
 ```
-aws ecr create-repository --repository-name vsi-rosbag-image-repository
+aws ecr create-repository --repository-name rosbag-images-extract
 ```
+
 
 
 如果是第一次运行CDK，可以参考 [CDK官方文档](https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html)，或者执行如下注释了的代码
@@ -106,13 +105,12 @@ bash deploy.sh deploy true
 
 
 # 3.准备数据
-----------
 请确保 CDK 全部部署成功（大概需要15-20分钟），然后再在 Cloud9 上执行这些操作。
 ```
 # get s3 bucket name
 s3url="https://auto-bwcx-me.s3.ap-southeast-1.amazonaws.com/my-vsi-rosbag-stack-srcbucket"
 echo "Download URL is: ${s3url}"
-s3bkt=$(aws s3 ls |grep my-vsi-rosbag-stack-srcbucket |awk '{print $3}')
+s3bkt=$(aws s3 ls |grep rosbag-images-extract-srcbucket |awk '{print $3}')
 echo "S3 bucket is: ${s3bkt}"
 
 
@@ -143,8 +141,6 @@ aws s3 cp ./auto-data/test2/2020-11-19-22-21-36_1.bag s3://${s3bkt}/test-vehicle
 
 
 # 4.SageMaker笔记本
-----------
-
 打开一个 Terminal 终端，执行如下代码做准备工作
 ```
 cd SageMaker
@@ -154,12 +150,15 @@ git clone https://github.com/auto-bwcx-me/aws-autonomous-driving-data-lake-image
 cp -Rv aws-autonomous-driving-data-lake-image-extraction-pipeline-from-ros-bagfiles/object-detection/* ./
 ```
 
+
 然后双击打开 `Transfer-Learning.ipynb` 可开始测试。
 
 
 
 
-# 5.ROS bag image extraction pipeline and Model Training
+
+# 原 ReadMe.md 文件
+# ROS bag image extraction pipeline and Model Training
 ----------
 This solution describes a workflow that processes ROS bag files on Amazon S3, extracts the PNG files from a video stream using AWS Fargate on Amazon Elastic Container Services. The solution builds a DynamoDB table containing all detection results from Amazon Rekognition, which can be queried to find images of interest such as images containing cars. Afterwards, we want to label these images and fine-tune a Object Detection Model to detect cars on the road. For simplicity reasons, we have provided an example SageMaker Ground Truth Manifest File from a Bounding Boxes Labeling Job. In order to train the Object Detection Model we will convert the SageMaker Ground Truth Manifest file into the RecordIO file format, after we have visually inspected the annotation quality from our labelling job.
 

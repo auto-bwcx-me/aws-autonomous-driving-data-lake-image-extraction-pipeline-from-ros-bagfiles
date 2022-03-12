@@ -170,7 +170,7 @@ if __name__ == "__main__":
                 "eventTime": "2020-10-26T14:53:21.544Z",
                 "eventName": "ObjectCreated:Put",
                 "userIdentity": {
-                    "principalId": "AWS:AROA5CGYXMF26EFIRBV7L:my-rosbag-stack-RekResultsProcessor85514127-IFMMFKTRENS4"
+                    "principalId": "AWS:AROA5CGYXMF26EFIRBV7L:rosbag-images-extract-RekResultsProcessor85514127-IFMMFKTRENS4"
                 },
                 "requestParameters": {"sourceIPAddress": "63.35.200.35"},
                 "responseElements": {
@@ -181,9 +181,9 @@ if __name__ == "__main__":
                     "s3SchemaVersion": "1.0",
                     "configurationId": "ZWE1NTFmN2MtZDViYy00N2NlLTk2NWUtNjc0YjBlMjU3N2U5",
                     "bucket": {
-                        "name": "my-rosbag-stack-destbucket3708473c-hevpuy70d45q",
+                        "name": "rosbag-images-extract-destbucket3708473c-hevpuy70d45q",
                         "ownerIdentity": {"principalId": "A1OHAXFWJQKA9R"},
-                        "arn": "arn:aws:s3:::my-rosbag-stack-destbucket3708473c-hevpuy70d45q",
+                        "arn": "arn:aws:s3:::rosbag-images-extract-destbucket3708473c-hevpuy70d45q",
                     },
                     "object": {
                         "key": "20201005/20201005_112005/2020-10-05-11-21-54_17/rear0042.json",
@@ -201,12 +201,12 @@ if __name__ == "__main__":
 
     os.environ[
         "image_bucket"
-    ] = "my-rosbag-stack-anonlabellingimgsbb222971-qlwt6ify0kg4"
+    ] = "rosbag-images-extract-anonlabellingimgsbb222971-qlwt6ify0kg4"
     lambda_handler(event, "")
     exit(0)
 
     response = s3.list_objects_v2(
-        Bucket="my-rosbag-stack-destbucket3708473c-hevpuy70d45q"
+        Bucket="rosbag-images-extract-destbucket3708473c-hevpuy70d45q"
     )
     count = 0
 
@@ -220,7 +220,7 @@ if __name__ == "__main__":
                 print(count)
         if response["IsTruncated"] == True:
             response = s3.list_objects_v2(
-                Bucket="my-rosbag-stack-destbucket3708473c-hevpuy70d45q",
+                Bucket="rosbag-images-extract-destbucket3708473c-hevpuy70d45q",
                 StartAfter=obj["Key"],
             )
         else:

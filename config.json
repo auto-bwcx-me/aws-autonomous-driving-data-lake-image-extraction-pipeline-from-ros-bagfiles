@@ -1,7 +1,7 @@
 {
-  "ecr-repository-name": "vsi-rosbag-image-repository",
-  "image-name": "my-vsi-ros-image",
-  "stack-id": "my-vsi-rosbag-stack",
+  "ecr-repository-name": "rosbag-images-extract",
+  "image-name": "rosbag-images-extract",
+  "stack-id": "rosbag-images-extract",
   "cpu": 4096,
   "memory-limit-mib": 30720,
   "timeout-minutes": 480,

@@ -504,6 +504,6 @@ class Fargate(core.Stack):
             self,
             id = "ros-bag-demo-notebook",
             role_arn = sm_nb_role.role_arn,
-            notebook_instance_name = 'ros-bag-demo-notebook',
-            instance_type = 'ml.t2.medium'
+            notebook_instance_name = 'rosbag-images-extract-notebook',
+            instance_type = 'ml.m5.xlarge'
         )

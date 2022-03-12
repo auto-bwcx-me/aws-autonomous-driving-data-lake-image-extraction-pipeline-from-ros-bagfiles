@@ -7,8 +7,8 @@ run_region="ap-southeast-1"
 
 export aws_account_id=$(aws sts get-caller-identity --query Account --output text)
 
-REPO_NAME=vsi-rosbag-image-repository # Should match the ecr repository name given in config.json
-IMAGE_NAME=my-vsi-ros-image           # Should match the image name given in config.json
+REPO_NAME=rosbag-images-extract  # Should match the ecr repository name given in config.json
+IMAGE_NAME=rosbag-images-extract # Should match the image name given in config.json
 
 python3 -m venv .env
 source .env/bin/activate
@@ -28,4 +28,4 @@ else
   echo Skipping build
 fi
 
-cdk $cmd --region ${run_region}
+cdk $cmd --region ${run_region} --all --require-approval never

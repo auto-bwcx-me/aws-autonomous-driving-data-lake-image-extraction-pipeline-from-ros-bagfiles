@@ -11,8 +11,7 @@
 A.设置Cloud9
 * 设置并绑定 Instance Profile 角色
 * 清理临时 Credentials
-
-```
+```shell
 echo "config region"
 aws configure set region $(curl -s http://169.254.169.254/latest/meta-data/placement/region)
 
@@ -25,7 +24,7 @@ rm -vf ${HOME}/.aws/credentials
 
 
 B.更新Python3.9（如果在别的实验已经做过，此步骤可以略过）
-```
+```shell
 cd ~/environment
 
 echo "get python 3.9 packages"
@@ -42,14 +41,12 @@ sudo rm -f /usr/bin/python3
 sudo ln -s /usr/local/bin/python3.9 /usr/bin/python3
 ```
 
-```
-
 
 
 # 2.部署步骤
 
 ## 2.1 准备代码
-```
+```shell
 cd ~/environment
 
 echo "clone code from github"
@@ -60,7 +57,7 @@ cd aws-autonomous-driving-data-lake-image-extraction-pipeline-from-ros-bagfiles
 
 
 设置Cloud9磁盘空间（如果在别的实验已经做过，此步骤可以略过）
-```
+```shell
 # sh resize-ebs.sh 1000
 
 sh resize-ebs-nvme.sh 1000
@@ -71,7 +68,7 @@ sh resize-ebs-nvme.sh 1000
 
 ## 2.2 设置区域（如果在别的实验已经做过，此步骤可以略过）
 在开始之前，需要设定 Region，如果没有设定的话，默认使用新加坡区域 （ap-southeast-1）
-```
+```shell
 # sh 00-define-region.sh ap-southeast-1
 
 sh 00-define-region.sh
@@ -80,7 +77,7 @@ sh 00-define-region.sh
 
 
 ## 2.3 准备环境
-```
+```shell
 pip install --upgrade pip
 
 python3 -m venv .env
@@ -91,7 +88,7 @@ pip3 install -r requirements.txt
 
 
 ## 2.4 安装CDK（如果在别的实验已经做过，此步骤可以略过）
-```
+```shell
 npm install -g aws-cdk --force
 
 cdk --version
@@ -99,14 +96,14 @@ cdk --version
 
 
 创建 ECR 存储库： `rosbag-images-extract`
-```
+```shell
 aws ecr create-repository --repository-name rosbag-images-extract
 ```
 
 
 
 如果是第一次运行CDK，可以参考 [CDK官方文档](https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html)，或者执行如下注释了的代码（如果在别的实验已经做过，此步骤可以略过）
-```
+```shell
 # cdk bootstrap aws://$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document/ |jq -r .accountId)/$(curl -s http://169.254.169.254/latest/meta-data/placement/region)
 
 cdk bootstrap
@@ -115,7 +112,7 @@ cdk bootstrap
 
 
 ## 2.5 CDK部署
-```
+```shell
 bash deploy.sh deploy true
 ```
 
@@ -123,7 +120,7 @@ bash deploy.sh deploy true
 
 # 3.准备数据
 请确保 CDK 全部部署成功（大概需要15-20分钟），然后再在 Cloud9 上执行这些操作。
-```
+```shell
 # get s3 bucket name
 s3url="https://auto-bwcx-me.s3.ap-southeast-1.amazonaws.com/my-vsi-rosbag-stack-srcbucket"
 echo "Download URL is: ${s3url}"
@@ -159,7 +156,7 @@ aws s3 cp ${save_dir}/test2/2020-11-19-22-21-36_1.bag s3://${s3bkt}/test-vehicle
 
 # 4.SageMaker笔记本
 打开一个 Terminal 终端，执行如下代码做准备工作
-```
+```shell
 cd SageMaker
 
 git clone https://github.com/auto-bwcx-me/aws-autonomous-driving-data-lake-image-extraction-pipeline-from-ros-bagfiles.git

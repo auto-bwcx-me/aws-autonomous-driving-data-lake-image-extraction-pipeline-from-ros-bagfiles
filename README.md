@@ -7,10 +7,8 @@
 
 
 
-
-
 # 1.环境配置
-设置Cloud9
+A.设置Cloud9
 * 设置并绑定 Instance Profile 角色
 * 清理临时 Credentials
 
@@ -23,6 +21,27 @@ sudo yum install jq wget -y
 
 echo "remove temp credentials"
 rm -vf ${HOME}/.aws/credentials
+```
+
+
+B.更新Python3.9（如果在别的实验已经做过，此步骤可以略过）
+```
+cd ~/environment
+
+echo "get python 3.9 packages"
+wget https://www.python.org/ftp/python/3.9.10/Python-3.9.10.tgz
+tar xzf Python-3.9.10.tgz
+cd Python-3.9.10 
+
+echo "compile and install"
+./configure --enable-optimizations
+sudo make altinstall
+
+echo "config python3.9"
+sudo rm -f /usr/bin/python3
+sudo ln -s /usr/local/bin/python3.9 /usr/bin/python3
+```
+
 ```
 
 
@@ -40,7 +59,7 @@ cd aws-autonomous-driving-data-lake-image-extraction-pipeline-from-ros-bagfiles
 ```
 
 
-设置Cloud9磁盘空间
+设置Cloud9磁盘空间（如果在别的实验已经做过，此步骤可以略过）
 ```
 # sh resize-ebs.sh 1000
 
@@ -50,7 +69,7 @@ sh resize-ebs-nvme.sh 1000
 
 
 
-## 2.2 设置区域
+## 2.2 设置区域（如果在别的实验已经做过，此步骤可以略过）
 在开始之前，需要设定 Region，如果没有设定的话，默认使用新加坡区域 （ap-southeast-1）
 ```
 # sh 00-define-region.sh ap-southeast-1
@@ -71,7 +90,7 @@ pip3 install -r requirements.txt
 
 
 
-## 2.4 安装CDK
+## 2.4 安装CDK（如果在别的实验已经做过，此步骤可以略过）
 ```
 npm install -g aws-cdk --force
 
@@ -86,7 +105,7 @@ aws ecr create-repository --repository-name rosbag-images-extract
 
 
 
-如果是第一次运行CDK，可以参考 [CDK官方文档](https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html)，或者执行如下注释了的代码
+如果是第一次运行CDK，可以参考 [CDK官方文档](https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html)，或者执行如下注释了的代码（如果在别的实验已经做过，此步骤可以略过）
 ```
 # cdk bootstrap aws://$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document/ |jq -r .accountId)/$(curl -s http://169.254.169.254/latest/meta-data/placement/region)
 
@@ -99,8 +118,6 @@ cdk bootstrap
 ```
 bash deploy.sh deploy true
 ```
-
-注意：这个部署过程有个确认过程，不能直接启动部署就走开哦，要确认部署才能走开。
 
 
 
@@ -116,23 +133,23 @@ echo "S3 bucket is: ${s3bkt}"
 
 # create saving directory
 cd ~/environment
-mkdir -p ./auto-data/{industry,test1,test2}
-
+mkdir -p ./data/rosbag-images-extract/{industry,test1,test2}
+save_dir="./data/rosbag-images-extract"
 
 # download testing files
-wget ${s3url}/industry-kit/v1/2020-10-05-11-11-58_1.bag -O ./auto-data/industry/2020-10-05-11-11-58_1.bag
-wget ${s3url}/industry-kit/v1/test_file_2GB_2021-07-14-12-00-00_1.bag -O ./auto-data/industry/test_file_2GB_2021-07-14-12-00-00_1.bag
-wget ${s3url}/industry-kit/v1/test_file_7GB_2021-07-14-12-30-00_1.bag -O ./auto-data/industry/test_file_7GB_2021-07-14-12-30-00_1.bag
-wget ${s3url}/test-vehicle-01/072021/2020-11-19-22-21-36_1.bag -O ./auto-data/test1/2020-11-19-22-21-36_1.bag
-wget ${s3url}/test-vehicle-02/072021/2020-11-19-22-21-36_1.bag -O ./auto-data/test2/2020-11-19-22-21-36_1.bag
+wget ${s3url}/industry-kit/v1/2020-10-05-11-11-58_1.bag -O ${save_dir}/industry/2020-10-05-11-11-58_1.bag
+wget ${s3url}/industry-kit/v1/test_file_2GB_2021-07-14-12-00-00_1.bag -O ${save_dir}/industry/test_file_2GB_2021-07-14-12-00-00_1.bag
+wget ${s3url}/industry-kit/v1/test_file_7GB_2021-07-14-12-30-00_1.bag -O ${save_dir}/industry/test_file_7GB_2021-07-14-12-30-00_1.bag
+wget ${s3url}/test-vehicle-01/072021/2020-11-19-22-21-36_1.bag -O ${save_dir}/test1/2020-11-19-22-21-36_1.bag
+wget ${s3url}/test-vehicle-02/072021/2020-11-19-22-21-36_1.bag -O ${save_dir}/test2/2020-11-19-22-21-36_1.bag
 
 
 # upload testing file
-aws s3 cp ./auto-data/industry/2020-10-05-11-11-58_1.bag s3://${s3bkt}/industry-kit/v1/2020-10-05-11-11-58_1.bag
-aws s3 cp ./auto-data/industry/test_file_2GB_2021-07-14-12-00-00_1.bag s3://${s3bkt}/industry-kit/v1/test_file_2GB_2021-07-14-12-00-00_1.bag
-aws s3 cp ./auto-data/industry/test_file_7GB_2021-07-14-12-30-00_1.bag s3://${s3bkt}/industry-kit/v1/test_file_7GB_2021-07-14-12-30-00_1.bag
-aws s3 cp ./auto-data/test1/2020-11-19-22-21-36_1.bag s3://${s3bkt}/test-vehicle-01/072021/2020-11-19-22-21-36_1.bag
-aws s3 cp ./auto-data/test2/2020-11-19-22-21-36_1.bag s3://${s3bkt}/test-vehicle-02/072021/2020-11-19-22-21-36_1.bag
+aws s3 cp ${save_dir}/industry/2020-10-05-11-11-58_1.bag s3://${s3bkt}/industry-kit/v1/2020-10-05-11-11-58_1.bag
+aws s3 cp ${save_dir}/industry/test_file_2GB_2021-07-14-12-00-00_1.bag s3://${s3bkt}/industry-kit/v1/test_file_2GB_2021-07-14-12-00-00_1.bag
+aws s3 cp ${save_dir}/industry/test_file_7GB_2021-07-14-12-30-00_1.bag s3://${s3bkt}/industry-kit/v1/test_file_7GB_2021-07-14-12-30-00_1.bag
+aws s3 cp ${save_dir}/test1/2020-11-19-22-21-36_1.bag s3://${s3bkt}/test-vehicle-01/072021/2020-11-19-22-21-36_1.bag
+aws s3 cp ${save_dir}/test2/2020-11-19-22-21-36_1.bag s3://${s3bkt}/test-vehicle-02/072021/2020-11-19-22-21-36_1.bag
 ```
 
 

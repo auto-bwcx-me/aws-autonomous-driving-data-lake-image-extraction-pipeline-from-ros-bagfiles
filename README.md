@@ -6,7 +6,6 @@
 英文原版 Blog ： [building-an-automated-image-processing-and-model-training-pipeline-for-autonomous-driving](https://aws.amazon.com/cn/blogs/architecture/field-notes-building-an-automated-image-processing-and-model-training-pipeline-for-autonomous-driving/)
 
 
-
 # 1.环境配置
 A.设置Cloud9
 * 设置并绑定 Instance Profile 角色
@@ -23,7 +22,7 @@ rm -vf ${HOME}/.aws/credentials
 ```
 
 
-B.更新Python3.9（如果在别的实验已经做过，此步骤可以略过）
+B.更新Python3.9
 ```shell
 cd ~/environment
 
@@ -56,7 +55,7 @@ cd aws-autonomous-driving-data-lake-image-extraction-pipeline-from-ros-bagfiles
 ```
 
 
-设置Cloud9磁盘空间（如果在别的实验已经做过，此步骤可以略过）
+设置Cloud9磁盘空间
 ```shell
 # sh resize-ebs.sh 1000
 
@@ -66,7 +65,7 @@ sh resize-ebs-nvme.sh 1000
 
 
 
-## 2.2 设置区域（如果在别的实验已经做过，此步骤可以略过）
+## 2.2 设置区域
 在开始之前，需要设定 Region，如果没有设定的话，默认使用新加坡区域 （ap-southeast-1）
 ```shell
 # sh 00-define-region.sh ap-southeast-1
@@ -87,7 +86,7 @@ pip3 install -r requirements.txt
 
 
 
-## 2.4 安装CDK（如果在别的实验已经做过，此步骤可以略过）
+## 2.4 安装CDK
 ```shell
 npm install -g aws-cdk --force
 
@@ -102,7 +101,7 @@ aws ecr create-repository --repository-name rosbag-images-extract
 
 
 
-如果是第一次运行CDK，可以参考 [CDK官方文档](https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html)，或者执行如下注释了的代码（如果在别的实验已经做过，此步骤可以略过）
+如果是第一次运行CDK，可以参考 [CDK官方文档](https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html)，或者执行如下注释了的代码
 ```shell
 # cdk bootstrap aws://$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document/ |jq -r .accountId)/$(curl -s http://169.254.169.254/latest/meta-data/placement/region)
 

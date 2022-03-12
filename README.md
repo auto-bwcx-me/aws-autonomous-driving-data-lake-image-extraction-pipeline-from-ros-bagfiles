@@ -170,7 +170,7 @@ cp -Rv aws-autonomous-driving-data-lake-image-extraction-pipeline-from-ros-bagfi
 # 5.环境清理
 先手工清空对应的S3桶里面的数据，然后执行如下命令清除环境
 ```shell
-cdk destroy --all --require-approval never
+cdk destroy --all
 ```
 
 

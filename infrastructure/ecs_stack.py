@@ -230,7 +230,13 @@ class Fargate(core.Stack):
 
         fs.connections.allow_default_port_from(run_task.connections)
 
-        state_logs = aws_logs.LogGroup(self, "stateLogs")
+        #state_logs = aws_logs.LogGroup(self, "stateLogs")
+        state_logs = aws_logs.LogGroup(
+                self,
+                f"{image_name}-log-group",
+                log_group_name=f"/stepfunctions/{image_name}"
+            )
+
         state_machine = sfn.StateMachine(
             self,
             "RunTaskStateMachine",

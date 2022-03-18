@@ -168,7 +168,11 @@ class Fargate(core.Stack):
 
         logs = ecs.LogDriver.aws_logs(
             stream_prefix="ecs",
-            log_group=aws_logs.LogGroup(self, f"{image_name}-log-group2"),
+            log_group=aws_logs.LogGroup(
+                self,
+                f"{image_name}-log-group",
+                log_group_name=f"/ecs/{image_name}"
+            ),
         )
 
         container_name = f"{image_name}-container"

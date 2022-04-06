@@ -170,7 +170,7 @@ class Fargate(core.Stack):
             stream_prefix="ecs",
             log_group=aws_logs.LogGroup(
                 self,
-                f"{image_name}-log-group",
+                f"{image_name}-ecs-log-group",
                 log_group_name=f"/ecs/{image_name}"
             ),
         )
@@ -233,7 +233,7 @@ class Fargate(core.Stack):
         #state_logs = aws_logs.LogGroup(self, "stateLogs")
         state_logs = aws_logs.LogGroup(
                 self,
-                f"{image_name}-log-group",
+                f"{image_name}-stepfunctions-log-group",
                 log_group_name=f"/stepfunctions/{image_name}"
             )
 
